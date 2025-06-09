@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "developer-info": {
+      "command": "node",
+      "args": ["index.js"],
+      "cwd": "/Users/banik/Desktop/Projects2025/MCP-Server/developer-info-server",
+      "disabled": false,
+      "alwaysAllow": ["people-info"]
+    }
+  }
+}

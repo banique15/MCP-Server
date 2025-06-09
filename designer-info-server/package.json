@@ -1,0 +1,15 @@
+{
+  "name": "designer-info-server",
+  "version": "1.0.0",
+  "description": "MCP server that provides designer information via the get_designer_name tool",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "chmod +x index.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "latest",
+    "zod": "^3.22.4"
+  }
+}

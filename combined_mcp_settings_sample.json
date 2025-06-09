@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "developer-info": {
+      "command": "docker",
+      "args": ["run", "-i", "mcp-developer-server"],
+      "disabled": false,
+      "alwaysAllow": []
+    },
+    "people-info": {
+      "command": "docker",
+      "args": ["run", "-i", "--env-file", "/Users/banik/Desktop/Projects2025/MCP-Server/people-info-server/.env", "mcp-people-info-server"],
+      "disabled": false,
+      "alwaysAllow": []
+    }
+  }
+}

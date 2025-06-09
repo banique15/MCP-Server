@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "people-info": {
+      "command": "docker",
+      "args": ["run", "-i", "--env-file", "/path/to/.env", "mcp-people-info-server"],
+      "disabled": false,
+      "alwaysAllow": []
+    }
+  }
+}

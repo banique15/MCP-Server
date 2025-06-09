@@ -1,72 +1,48 @@
-# Simple MCP Server
+# MCP Server Project
 
-A simple MCP server that exposes a `get_developer_name` tool that returns "Neick".
+This project contains multiple Model Context Protocol (MCP) servers that demonstrate different capabilities and patterns for extending Claude's functionality.
 
 ## Project Structure
 
-- `index.js`: Main server implementation
-- `package.json`: Node.js project configuration
-- `Dockerfile`: Docker configuration for containerization
+The project is organized into separate directories for each MCP server:
 
-## Building and Running
+- `/developer-info-server/` - A simple MCP server that provides developer information
+  - Provides a `get_developer_name` tool that returns "Neick"
+  - Demonstrates basic MCP server implementation
 
-### Build the Docker Image
+- `/people-info-server/` - An MCP server that demonstrates nested tool calling
+  - Provides a `get_people_info` tool that takes a title parameter
+  - Uses the Anthropic API to call Claude
+  - That Claude instance can use the `get_developer_name` tool
+  - Demonstrates LLM tool chaining pattern
 
-```bash
-docker build -t mcp-developer-server .
-```
+## Getting Started
 
-### Run the Docker Container
+Each server directory contains its own README.md with specific instructions for building, running, and using that server.
 
-```bash
-docker run -i mcp-developer-server
-```
+### Quick Start
 
-Note: The `-i` flag is important as it keeps stdin open, which is required for stdio communication.
+1. Build and run the developer-info server:
+   ```bash
+   cd developer-info-server
+   docker build -t mcp-developer-server .
+   docker run -i mcp-developer-server
+   ```
 
-## MCP Server Configuration
+2. Configure and run the people-info server:
+   ```bash
+   cd people-info-server
+   # Edit .env to add your Anthropic API key
+   docker build -t mcp-people-info-server .
+   docker run -i --env-file .env mcp-people-info-server
+   ```
 
-To use this MCP server with Claude, you need to add it to the MCP settings file. Here's how to configure it:
+3. Configure MCP settings:
+   See `combined_mcp_settings_sample.json` for an example of how to configure both servers in your MCP settings file.
 
-### For VSCode Extension
+## Using the MCP Servers
 
-Add the following to the MCP settings file located at:
-`~/Library/Application Support/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/mcp_settings.json`
-
-```json
-{
-  "mcpServers": {
-    "developer-info": {
-      "command": "docker",
-      "args": ["run", "-i", "mcp-developer-server"],
-      "disabled": false,
-      "alwaysAllow": []
-    }
-  }
-}
-```
-
-### For Claude Desktop App
-
-Add the following to the Claude desktop app configuration file located at:
-`~/Library/Application Support/Claude/claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "developer-info": {
-      "command": "docker",
-      "args": ["run", "-i", "mcp-developer-server"],
-      "disabled": false,
-      "alwaysAllow": []
-    }
-  }
-}
-```
-
-## Using the Tool
-
-Once the MCP server is configured and running, you can use the `get_developer_name` tool with Claude:
+### Developer Info Server
 
 ```
 <use_mcp_tool>
@@ -78,4 +54,26 @@ Once the MCP server is configured and running, you can use the `get_developer_na
 </use_mcp_tool>
 ```
 
-The tool will return "Neick" as the developer name.
+### People Info Server
+
+```
+<use_mcp_tool>
+<server_name>people-info</server_name>
+<tool_name>get_people_info</tool_name>
+<arguments>
+{
+  "title": "developer"
+}
+</arguments>
+</use_mcp_tool>
+```
+
+## Nested Tool Calling Pattern
+
+This project demonstrates a powerful pattern for tool chaining where one LLM can leverage the capabilities of another LLM through tools, creating a nested architecture that can solve complex problems.
+
+The flow works like this:
+1. Claude calls the `get_people_info` tool provided by the people-info server
+2. The people-info server calls Anthropic's API (another Claude instance)
+3. That Claude instance uses the `get_developer_name` tool from the developer-info server
+4. The result flows back up the chain to the original Claude

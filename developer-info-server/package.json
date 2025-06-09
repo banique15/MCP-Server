@@ -1,7 +1,7 @@
 {
-  "name": "mcp-server",
+  "name": "developer-info-server",
   "version": "1.0.0",
-  "description": "A simple MCP server that exposes a get_developer_name tool",
+  "description": "MCP server that provides developer information via the get_developer_name tool",
   "main": "index.js",
   "type": "module",
   "scripts": {

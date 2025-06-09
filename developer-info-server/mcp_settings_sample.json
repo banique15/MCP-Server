@@ -1,10 +1,11 @@
 {
   "mcpServers": {
     "developer-info": {
-      "command": "docker",
-      "args": ["run", "-i", "mcp-developer-server"],
+      "command": "node",
+      "args": ["index.js"],
+      "cwd": "/Users/banik/Desktop/Projects2025/MCP-Server/developer-info-server",
       "disabled": false,
-      "alwaysAllow": []
+      "alwaysAllow": ["people-info"]
     }
   }
 }

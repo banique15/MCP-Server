@@ -1,4 +1,4 @@
-# Simple MCP Server
+# Developer Info MCP Server
 
 A simple MCP server that exposes a `get_developer_name` tool that returns "Neick".
 
@@ -7,18 +7,29 @@ A simple MCP server that exposes a `get_developer_name` tool that returns "Neick
 - `index.js`: Main server implementation
 - `package.json`: Node.js project configuration
 - `Dockerfile`: Docker configuration for containerization
+- `mcp_settings_sample.json`: Sample MCP settings for this server
 
 ## Building and Running
 
-### Build the Docker Image
+### Install Dependencies
 
 ```bash
-docker build -t mcp-developer-server .
+npm install
 ```
 
-### Run the Docker Container
+### Run with Node.js
 
 ```bash
+npm start
+```
+
+### Build and Run with Docker
+
+```bash
+# Build the Docker image
+docker build -t mcp-developer-server .
+
+# Run the Docker container
 docker run -i mcp-developer-server
 ```
 
@@ -37,19 +48,17 @@ Add the following to the MCP settings file located at:
 {
   "mcpServers": {
     "developer-info": {
-      "command": "docker",
-      "args": ["run", "-i", "mcp-developer-server"],
+      "command": "node",
+      "args": ["index.js"],
+      "cwd": "/path/to/developer-info-server",
       "disabled": false,
-      "alwaysAllow": []
+      "alwaysAllow": ["people-info"]
     }
   }
 }
 ```
 
-### For Claude Desktop App
-
-Add the following to the Claude desktop app configuration file located at:
-`~/Library/Application Support/Claude/claude_desktop_config.json`
+### For Docker Deployment
 
 ```json
 {
@@ -58,7 +67,7 @@ Add the following to the Claude desktop app configuration file located at:
       "command": "docker",
       "args": ["run", "-i", "mcp-developer-server"],
       "disabled": false,
-      "alwaysAllow": []
+      "alwaysAllow": ["people-info"]
     }
   }
 }
@@ -79,3 +88,9 @@ Once the MCP server is configured and running, you can use the `get_developer_na
 ```
 
 The tool will return "Neick" as the developer name.
+
+## Integration with People Info Server
+
+This server is designed to work with the people-info server. The people-info server will call this server's `get_developer_name` tool when it needs information about developers.
+
+See the main README.md for more information on how these servers work together.

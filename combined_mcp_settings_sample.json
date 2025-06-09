@@ -1,14 +1,26 @@
 {
   "mcpServers": {
     "developer-info": {
-      "command": "docker",
-      "args": ["run", "-i", "mcp-developer-server"],
+      "command": "node",
+      "args": ["index.js"],
+      "cwd": "/Users/banik/Desktop/Projects2025/MCP-Server/developer-info-server",
       "disabled": false,
-      "alwaysAllow": []
+      "alwaysAllow": ["people-info"]
+    },
+    "designer-info": {
+      "command": "node",
+      "args": ["index.js"],
+      "cwd": "/Users/banik/Desktop/Projects2025/MCP-Server/designer-info-server",
+      "disabled": false,
+      "alwaysAllow": ["people-info"]
     },
     "people-info": {
-      "command": "docker",
-      "args": ["run", "-i", "--env-file", "/Users/banik/Desktop/Projects2025/MCP-Server/people-info-server/.env", "mcp-people-info-server"],
+      "command": "node",
+      "args": ["index.js"],
+      "cwd": "/Users/banik/Desktop/Projects2025/MCP-Server/people-info-server",
+      "env": {
+        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}"
+      },
       "disabled": false,
       "alwaysAllow": []
     }

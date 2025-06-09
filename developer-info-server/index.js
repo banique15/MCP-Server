@@ -6,8 +6,9 @@ import { z } from "zod";
 
 // Create an MCP server
 const server = new McpServer({
-  name: "developer-info-server",
-  version: "1.0.0"
+  name: "developer-info",
+  version: "1.0.0",
+  description: "MCP server that provides developer information"
 });
 
 // Add a tool for getting the developer name
@@ -17,7 +18,8 @@ server.tool(
     // No parameters needed for this simple tool
   },
   async () => {
-    // Simply return "Neick" as the developer name
+    console.error("Developer Info MCP: get_developer_name tool called");
+    // Return "Neick" as the developer name
     return {
       content: [
         {

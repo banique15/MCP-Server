@@ -3,12 +3,11 @@
     "people-info": {
       "command": "node",
       "args": ["index.js"],
-      "cwd": "/Users/banik/Desktop/Projects2025/MCP-Server/people-info-server",
+      "cwd": "/path/to/your/people-info-server",
       "env": {
         "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}"
       },
-      "disabled": false,
-      "alwaysAllow": []
+      "disabled": false
     }
   }
 }

@@ -1,156 +1,224 @@
-# MCP Server Project
+# MCP Server Orchestration Project
 
-This project contains three Model Context Protocol (MCP) servers that work together:
+An intelligent Model Context Protocol (MCP) orchestration system that demonstrates dynamic server coordination and AI-powered query routing. This project showcases how a primary MCP server can intelligently analyze natural language queries and dynamically call specialized MCP servers to provide comprehensive responses.
 
-1. **developer-info**: Provides information about developers
-2. **designer-info**: Provides information about designers
-3. **people-info**: Provides information about people based on their job title, and integrates with both the developer-info and designer-info servers
+## 🧠 Architecture Overview
 
-## Project Structure
+```mermaid
+graph TD
+    A[User Query] --> B[People-Info Orchestrator]
+    B --> C[Claude AI Analysis]
+    C --> D{Query Category}
+    D -->|Developer Query| E[Start Developer-Info Server]
+    D -->|Designer Query| F[Start Designer-Info Server]
+    D -->|Other| G[Direct Response]
+    E --> H[Call get_developer_name]
+    F --> I[Call get_designer_name]
+    H --> J[Claude Enhancement]
+    I --> J
+    G --> J
+    J --> K[Natural Language Response]
+    K --> A
+```
+
+## 🎯 How It Works
+
+1. **User asks a natural language question** like *"What is the developer's name?"*
+2. **People-info orchestrator** receives the query
+3. **Claude AI analyzes** the query to determine intent and category
+4. **Orchestrator dynamically starts** the appropriate specialized server
+5. **MCP client calls** the right tool on the specialized server
+6. **Raw data is enhanced** by Claude AI into a natural response
+7. **User receives** a conversational, helpful answer
+
+## 🏗️ Project Structure
 
 ```
 MCP-Server/
-├── combined_mcp_settings_sample.json  # Combined settings for both servers
-├── developer-info-server/             # Developer info MCP server
-│   ├── Dockerfile                     # Docker configuration
-│   ├── index.js                       # Server implementation
-│   ├── mcp_settings_sample.json       # MCP settings for this server
-│   ├── package.json                   # Dependencies
-│   └── README.md                      # Documentation
-└── people-info-server/                # People info MCP server
-    ├── .env                           # Environment variables (create from .env.template)
-    ├── .env.template                  # Template for environment variables
-    ├── Dockerfile                     # Docker configuration
-    ├── index.js                       # Server implementation
-    ├── mcp_settings_sample.json       # MCP settings for this server
-    ├── package.json                   # Dependencies
-    └── README.md                      # Documentation
+├── people-info-server/          # 🧠 Main orchestrator (ADD THIS TO CLAUDE DESKTOP)
+│   ├── index.js                 # Intelligent routing and MCP client logic
+│   ├── package.json             # Dependencies including MCP client SDK
+│   ├── .env.template            # Environment template
+│   └── README.md                # Detailed orchestrator documentation
+├── developer-info-server/       # 👨‍💻 Developer data server
+│   ├── index.js                 # Returns developer information
+│   └── package.json             # Simple MCP server
+├── designer-info-server/        # 🎨 Designer data server
+│   ├── index.js                 # Returns designer information
+│   └── package.json             # Simple MCP server
+├── setup.sh                     # One-command setup script
+├── QUICK_START.md               # Super simple setup guide
+└── README.md                    # This file
 ```
 
-## How It Works
+## 🚀 Quick Start
 
-1. The `developer-info` server provides a tool called `get_developer_name` that returns "Neick".
-2. The `designer-info` server provides a tool called `get_designer_name` that returns "Jesse".
-3. The `people-info` server provides a tool called `get_people_info` that takes a job title parameter.
-4. When `get_people_info` is called:
-   - It first uses Claude to analyze the job title and categorize it as DEVELOPER, DESIGNER, or OTHER
-   - If it's developer-related, it dynamically starts the `developer-info` server and calls its `get_developer_name` tool
-   - If it's designer-related, it dynamically starts the `designer-info` server and calls its `get_designer_name` tool
-   - It then uses Claude to generate a detailed, personalized description based on the name and title
-   - For other titles, it uses Claude to generate general information about the job title without starting any additional servers
-
-## Setup Instructions
-
-### 1. Install Dependencies
-
-Run the following commands in both server directories:
-
+### Option 1: One-Command Setup
 ```bash
-cd developer-info-server
-npm install
-
-cd ../people-info-server
-npm install
+./setup.sh
 ```
 
-### 2. Configure Environment Variables
-
-Create a `.env` file in the `people-info-server` directory based on the `.env.template`:
-
+### Option 2: Manual Setup
 ```bash
 cd people-info-server
+npm install
 cp .env.template .env
+# Edit .env and add your ANTHROPIC_API_KEY
 ```
 
-Edit the `.env` file to add your Anthropic API key:
+### Add to Claude Desktop
+Add **only the orchestrator** to your Claude Desktop MCP settings:
 
-```
-ANTHROPIC_API_KEY=your_anthropic_api_key_here
-```
-
-### 3. Configure MCP Settings
-
-Copy the `combined_mcp_settings_sample.json` to your MCP settings location:
-
-```bash
-cp combined_mcp_settings_sample.json /path/to/your/mcp_settings.json
-```
-
-Update the paths in the settings file to match your actual installation paths.
-
-## Running the Servers
-
-You can run both servers directly using Node.js:
-
-```bash
-# Run the developer-info server
-cd developer-info-server
-npm start
-
-# Run the people-info server
-cd people-info-server
-npm start
+```json
+{
+  "mcpServers": {
+    "people-info": {
+      "command": "node",
+      "args": ["/Users/banik/Desktop/Projects2025/MCP-Server/people-info-server/index.js"],
+      "env": {
+        "ANTHROPIC_API_KEY": "your_anthropic_api_key_here"
+      }
+    }
+  }
+}
 ```
 
-Or you can build and run the Docker containers:
+## 🎮 Usage Examples
 
-```bash
-# Build and run the developer-info server
-cd developer-info-server
-docker build -t mcp-developer-server .
-docker run -i mcp-developer-server
+### Natural Language Queries
 
-# Build and run the people-info server
-cd people-info-server
-docker build -t mcp-people-info-server .
-docker run -i --env-file .env mcp-people-info-server
-```
-
-## Using the MCP Servers
-
-### Developer Info Server
-
-```
-<use_mcp_tool>
-<server_name>developer-info</server_name>
-<tool_name>get_developer_name</tool_name>
-<arguments>
-{}
-</arguments>
-</use_mcp_tool>
-```
-
-### People Info Server
-
-```
+**Ask about developers:**
+```xml
 <use_mcp_tool>
 <server_name>people-info</server_name>
 <tool_name>get_people_info</tool_name>
 <arguments>
 {
-  "title": "developer"
+  "query": "What is the developer's name?"
 }
 </arguments>
 </use_mcp_tool>
 ```
 
-## Dynamic MCP Server Orchestration
+**Ask about designers:**
+```xml
+<use_mcp_tool>
+<server_name>people-info</server_name>
+<tool_name>get_people_info</tool_name>
+<arguments>
+{
+  "query": "Tell me about the designer on the team"
+}
+</arguments>
+</use_mcp_tool>
+```
 
-This project demonstrates a dynamic MCP server orchestration architecture that combines:
+**General questions:**
+```xml
+<use_mcp_tool>
+<server_name>people-info</server_name>
+<tool_name>get_people_info</tool_name>
+<arguments>
+{
+  "query": "Who is the frontend developer?"
+}
+</arguments>
+</use_mcp_tool>
+```
 
-1. **LLM Analysis**: Using Claude to analyze and categorize job titles
-2. **Dynamic Server Management**: The people-info server starts specialized servers on-demand based on the job category
-3. **Contextual Content Generation**: Using Claude to generate detailed, personalized responses
+## 🔧 Technical Features
 
-The flow works like this:
+### 🧠 AI-Powered Query Analysis
+- Uses Claude 3.5 Sonnet to understand user intent
+- Categorizes queries as developer, designer, or other
+- Determines appropriate action (get name, get info, etc.)
 
-1. Claude calls the `get_people_info` tool provided by the people-info server
-2. The people-info server uses Claude to analyze and categorize the job title
-3. Based on the category:
-   - For developer titles: It dynamically starts the developer-info server and calls its tool
-   - For designer titles: It dynamically starts the designer-info server and calls its tool
-   - For other titles: It uses Claude directly without starting additional servers
-4. It then uses Claude to generate a personalized response based on the name and title
-5. The result flows back to the original Claude
+### 🔄 Dynamic Server Orchestration
+- Starts specialized MCP servers on-demand
+- Maintains connections for efficiency
+- Proper cleanup and resource management
 
-This approach demonstrates how a primary MCP server can dynamically orchestrate specialized MCP servers on-demand, starting them only when needed and terminating them after use. This creates a more efficient and scalable architecture where resources are only used when required.
+### 🌐 Real MCP Protocol Communication
+- Uses official MCP SDK for client-server communication
+- Proper JSON-RPC protocol implementation
+- Error handling and fallback mechanisms
+
+### 💬 Natural Language Enhancement
+- Raw server responses enhanced by Claude AI
+- Conversational, context-aware answers
+- Maintains query context throughout the flow
+
+## 📊 Data Separation
+
+### Developer-Info Server
+- **Name**: "Neick"
+- **Purpose**: Stores and provides developer information
+- **Tool**: `get_developer_name`
+
+### Designer-Info Server  
+- **Name**: "Jesse"
+- **Purpose**: Stores and provides designer information
+- **Tool**: `get_designer_name`
+
+### People-Info Orchestrator
+- **No data storage** - pure orchestration logic
+- **AI analysis** and **MCP client** functionality
+- **Response enhancement** and **natural language processing**
+
+## 🎯 Benefits of This Architecture
+
+1. **Separation of Concerns**: Each server has a single responsibility
+2. **Scalability**: Easy to add new specialized servers
+3. **Natural Interface**: Users can ask questions in plain English
+4. **Dynamic Resource Usage**: Servers only run when needed
+5. **AI Enhancement**: Raw data becomes conversational responses
+6. **Real MCP Protocol**: Demonstrates proper MCP client-server communication
+
+## 🔍 Example Interaction Flow
+
+**User Query**: *"What is the developer's name?"*
+
+1. **Orchestrator receives** query
+2. **Claude analyzes**: `{"category": "DEVELOPER", "action": "GET_NAME"}`
+3. **Orchestrator starts** developer-info server
+4. **MCP client calls** `get_developer_name` tool
+5. **Server responds**: `{"content": [{"type": "text", "text": "Neick"}]}`
+6. **Claude enhances**: *"The developer's name is Neick."*
+7. **User receives** natural response
+
+## 🛠️ Development & Testing
+
+### Test Individual Servers
+```bash
+# Test developer server
+cd developer-info-server && npm start
+
+# Test designer server  
+cd designer-info-server && npm start
+
+# Test orchestrator
+cd people-info-server && npm start
+```
+
+### Add New Specialized Servers
+1. Create new server directory (e.g., `manager-info-server`)
+2. Implement MCP server with appropriate tools
+3. Update orchestrator's analysis logic to recognize new categories
+4. Add MCP client calls for the new server
+
+## 🏆 Advanced MCP Concepts Demonstrated
+
+- **Multi-server orchestration**
+- **Dynamic server lifecycle management**
+- **MCP client-server communication**
+- **AI-powered request routing**
+- **Natural language query processing**
+- **Response enhancement and formatting**
+
+## 📝 License
+
+This project is open source and available under the MIT License.
+
+---
+
+**This project showcases advanced MCP patterns and serves as a reference for building intelligent, AI-powered MCP orchestration systems.** 🚀

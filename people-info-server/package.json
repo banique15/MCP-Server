@@ -1,7 +1,7 @@
 {
   "name": "people-info-server",
-  "version": "1.0.0",
-  "description": "MCP server that provides a get_people_info tool and integrates with developer-info MCP server",
+  "version": "2.0.0",
+  "description": "Comprehensive MCP server that provides information about people based on their job title, with built-in developer and designer knowledge",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.10.0",
+    "@anthropic-ai/sdk": "^0.53.0",
     "@modelcontextprotocol/sdk": "latest",
     "dotenv": "^16.3.1",
     "zod": "^3.22.4"

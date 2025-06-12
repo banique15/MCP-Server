@@ -7,6 +7,25 @@ Ask natural language questions and get intelligent responses powered by dynamic 
 - *"What is the developer's name?"* → Calls developer-info server → *"The developer's name is Neick."*
 - *"Tell me about the designer"* → Calls designer-info server → *"The designer's name is Jesse."*
 
+## 🚨 **IMPORTANT: Path Configuration for New Users**
+
+If you're setting up this project on a **different machine**, you need to update **2 critical paths**:
+
+### **1. Update Node.js Path in Code**
+Edit [`people-info-server/index.js`](people-info-server/index.js) line 84:
+```javascript
+// Change this hardcoded path:
+command: '/Users/banik/.nvm/versions/node/v22.16.0/bin/node',
+
+// To use your system's Node.js:
+command: 'node',
+```
+
+### **2. Update Project Path in Claude Desktop Settings**
+In step 2 below, replace `/Users/banik/Desktop/Projects2025/MCP-Server/` with **your actual project path**.
+
+---
+
 ## ⚡ One-Command Setup
 
 ```bash
@@ -26,12 +45,14 @@ cp .env.template .env
 ### 2. Add to Claude Desktop
 Add **only the orchestrator** to your MCP settings:
 
+**⚠️ IMPORTANT: Replace the path below with YOUR actual project path!**
+
 ```json
 {
   "mcpServers": {
     "people-info": {
       "command": "node",
-      "args": ["/Users/banik/Desktop/Projects2025/MCP-Server/people-info-server/index.js"],
+      "args": ["/YOUR/ACTUAL/PATH/TO/MCP-Server/people-info-server/index.js"],
       "env": {
         "ANTHROPIC_API_KEY": "your_anthropic_api_key_here"
       }
@@ -39,6 +60,11 @@ Add **only the orchestrator** to your MCP settings:
   }
 }
 ```
+
+**Example paths for different systems:**
+- **macOS**: `"/Users/yourname/Desktop/MCP-Server/people-info-server/index.js"`
+- **Windows**: `"C:\\Users\\yourname\\Desktop\\MCP-Server\\people-info-server\\index.js"`
+- **Linux**: `"/home/yourname/Desktop/MCP-Server/people-info-server/index.js"`
 
 ### 3. Restart Claude Desktop
 
@@ -129,14 +155,21 @@ Try these natural language queries in Claude Desktop:
 **Server not found errors?**
 - Make sure `developer-info-server` and `designer-info-server` directories exist
 - Check that both have working `index.js` files
+- **Verify you updated the Node.js path** in `people-info-server/index.js` line 84
 
 **Connection issues?**
 - Verify your ANTHROPIC_API_KEY is correct
+- **Double-check your project path** in Claude Desktop MCP settings
 - Check Claude Desktop logs for detailed errors
+
+**"Command not found" or "ENOENT" errors?**
+- **Update the hardcoded Node.js path** in `people-info-server/index.js` line 84 to `'node'`
+- Make sure Node.js is installed and accessible via `node` command
 
 **No response?**
 - Try restarting Claude Desktop
 - Make sure the query is about developers or designers
+- **Verify both path changes were made** (Node.js path + Claude Desktop path)
 
 ---
 

@@ -53,6 +53,8 @@ MCP-Server/
 
 ## 🚀 Quick Start
 
+> **🚨 IMPORTANT FOR NEW USERS**: If you're setting up this project on a different machine, you need to update 2 critical paths. See the [Path Configuration Guide](#-path-configuration-for-sharing) below.
+
 ### Option 1: One-Command Setup
 ```bash
 ./setup.sh
@@ -214,6 +216,46 @@ cd people-info-server && npm start
 - **AI-powered request routing**
 - **Natural language query processing**
 - **Response enhancement and formatting**
+
+## 🔧 Path Configuration for Sharing
+
+If you're setting up this project on a **different machine** than the original developer, you need to update these paths:
+
+### **1. Update Node.js Path in Code**
+Edit [`people-info-server/index.js`](people-info-server/index.js) line 84:
+```javascript
+// Change this hardcoded path:
+command: '/Users/banik/.nvm/versions/node/v22.16.0/bin/node',
+
+// To use your system's Node.js:
+command: 'node',
+```
+
+### **2. Update Project Path in Claude Desktop Settings**
+Replace the hardcoded path in your Claude Desktop MCP settings:
+```json
+{
+  "mcpServers": {
+    "people-info": {
+      "command": "node",
+      "args": ["/YOUR/ACTUAL/PATH/TO/MCP-Server/people-info-server/index.js"],
+      "env": {
+        "ANTHROPIC_API_KEY": "your_anthropic_api_key_here"
+      }
+    }
+  }
+}
+```
+
+**Example paths:**
+- **macOS**: `"/Users/yourname/Desktop/MCP-Server/people-info-server/index.js"`
+- **Windows**: `"C:\\Users\\yourname\\Desktop\\MCP-Server\\people-info-server\\index.js"`
+- **Linux**: `"/home/yourname/Desktop/MCP-Server/people-info-server/index.js"`
+
+### **✅ What Doesn't Need Changes**
+- **Developer-Info Server** - Completely portable
+- **Designer-Info Server** - Completely portable
+- **Internal server discovery** - Uses relative paths automatically
 
 ## 📝 License
 
